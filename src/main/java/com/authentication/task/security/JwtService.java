@@ -1,4 +1,4 @@
-package com.authentication.task.serviceImpl;
+package com.authentication.task.security;
 
 import java.util.Date;
 import java.util.function.Function;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 /**
@@ -81,6 +82,9 @@ public class JwtService {
     }
 
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+		 System.out.println("JWT Secret = " + secret);
+	     System.out.println("Length = " + secret.length());
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

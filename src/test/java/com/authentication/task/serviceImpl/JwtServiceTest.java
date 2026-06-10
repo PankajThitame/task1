@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.authentication.task.security.JwtService;
+
 /**
  * Unit tests for {@link JwtService}.
  * Uses ReflectionTestUtils to inject @Value fields without Spring context.

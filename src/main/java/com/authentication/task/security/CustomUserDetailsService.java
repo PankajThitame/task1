@@ -1,4 +1,4 @@
-package com.authentication.task.services;
+package com.authentication.task.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

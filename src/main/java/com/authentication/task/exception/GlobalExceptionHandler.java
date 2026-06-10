@@ -1,4 +1,4 @@
-package com.authentication.task.config;
+package com.authentication.task.exception;
 
 import java.util.HashMap;
 import java.util.Map;
