@@ -1,23 +1,19 @@
 package com.authentication.task.services;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.authentication.task.entity.Employee;
+import com.authentication.task.dto.EmployeeDTO;
 
 public interface EmployeeService {
 
-    Employee save(Employee employee);
+    EmployeeDTO save(EmployeeDTO dto);
 
-    List<Employee> getAll();
-    
-    public Page<Employee> getEmployees(Pageable pageable);
+    Page<EmployeeDTO> getEmployees(Pageable pageable);
 
-    Employee getById(Long id);
+    EmployeeDTO getById(Long id);
 
-    Employee update(Long id, Employee employee);
+    EmployeeDTO update(Long id, EmployeeDTO dto);
 
     void delete(Long id);
 }

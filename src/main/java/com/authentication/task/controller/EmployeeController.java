@@ -1,25 +1,23 @@
 package com.authentication.task.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import com.authentication.task.entity.Employee;
+import com.authentication.task.dto.EmployeeDTO;
 import com.authentication.task.services.EmployeeService;
 
+import jakarta.validation.Valid;
+
+/**
+ * REST controller for Employee CRUD operations.
+ * All endpoints are protected and require a valid JWT token.
+ */
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
@@ -27,48 +25,69 @@ public class EmployeeController {
     @Autowired
     private EmployeeService service;
 
+    /**
+     * Create a new employee record.
+     * POST /employees
+     */
     @PostMapping
-    public Employee save(
-            @RequestBody Employee employee) {
+    public ResponseEntity<EmployeeDTO> save(
+            @Valid @RequestBody EmployeeDTO dto) {
 
-        return service.save(employee);
+        EmployeeDTO saved = service.save(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
+    /**
+     * List all employees with pagination and sorting.
+     * GET /employees?page=0&size=5&sortBy=name&direction=asc
+     */
     @GetMapping
-    public Page<Employee> getAllEmployees(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "id") String sortBy) {
+    public ResponseEntity<Page<EmployeeDTO>> getAllEmployees(
+            @RequestParam(defaultValue = "0")    int    page,
+            @RequestParam(defaultValue = "5")    int    size,
+            @RequestParam(defaultValue = "id")   String sortBy,
+            @RequestParam(defaultValue = "asc")  String direction) {
 
-        Pageable pageable =
-                PageRequest.of(
-                        page,
-                        size,
-                        Sort.by(sortBy));
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
 
-        return service.getEmployees(pageable);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return ResponseEntity.ok(service.getEmployees(pageable));
     }
 
+    /**
+     * Get a single employee by ID.
+     * GET /employees/{id}
+     */
     @GetMapping("/{id}")
-    public Employee getById(
+    public ResponseEntity<EmployeeDTO> getById(
             @PathVariable Long id) {
 
-        return service.getById(id);
+        return ResponseEntity.ok(service.getById(id));
     }
 
+    /**
+     * Update an existing employee.
+     * PUT /employees/{id}
+     */
     @PutMapping("/{id}")
-    public Employee update(
+    public ResponseEntity<EmployeeDTO> update(
             @PathVariable Long id,
-            @RequestBody Employee employee) {
+            @Valid @RequestBody EmployeeDTO dto) {
 
-        return service.update(id, employee);
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
+    /**
+     * Delete an employee by ID.
+     * DELETE /employees/{id}
+     */
     @DeleteMapping("/{id}")
-    public String delete(
+    public ResponseEntity<String> delete(
             @PathVariable Long id) {
 
         service.delete(id);
-        return "Deleted Successfully";
+        return ResponseEntity.ok("Employee deleted successfully");
     }
 }
